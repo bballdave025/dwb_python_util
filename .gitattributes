@@ -5,7 +5,7 @@
 #@author   David Wallace BLACK (bballdave025)
 #@since    2023-02-08
 # Mostly here to preserve *NIX-style line endings, which are very important
-#+ for certain data andtext files in the Bourne Again SHell (bash) files, 
+#+ for certain data and text files in the Bourne Again SHell (bash) files, 
 #+ ... The python files don't care.
 #
 #@ref : https://stackoverflow.com/a/59644154/6505499
