@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+##############################################################################
+'''
+@file pygrep_dwb.py
+@author David BLACK ( GitHub @bballdave025 )
+@since the late 2010s
+  but for picking it back up
+@since 2024-05-20
+@package dwb_python_util
+
+@todo Perhaps extend this to use the re package - somewhat done
+@todo Allow a string to be fed instead of a filename
+@todo Implement an argparse thingie
+@todo Implement other parts of the `grep` from `bash`
+'''
+##############################################################################
+
+##-------------------
+## IMPORT STATEMENTS
+##-------------------
+import os
+import sys
+import re
+
+# Intra-Package
+## For Python2
+# from __future__ import absolute_import
+
+def main(string_to_find, filename):
+  '''
+  Allows an entrance for running as a command-line script
+  
+  Defaults to the `grep` method
+  '''
+  
+  return grep(string_to_find, filename)
+  
+##endof:  main(filename)
+
+
+def run(string_to_find, filename):
+  '''
+  Easy-to-remember entrance
+  
+  Defaults to the `grep` method
+  '''
+  
+  return grep(string_to_find, filename)
+  
+##endof:  main(filename)
+
+
+def grep(string_to_find, filename):
+  '''
+  Mimics part of the behavior of the `bash` command, `grep`.
+  
+  This only allows one to search for one string in one file. It might
+  be nice at a later time to extend this to search using the re module
+  (regex) even further than it uses it, now.
+  
+  @param string_to_find  A string for which the file will be searched,
+                         the searching being done line-by-line
+  @param filename        A string representing the filename whose contents
+                         will be searched
+  @return                A string representing the line (or sequence of
+                         lines) in the file which contain  string_to_find
+  '''
+  
+  the_result_str = ''
+  
+  # @todo  rewrite all with open to have 'utf-8' as encoding and to use UnicodeDammit
+  with open(filename, 'r') as f:
+    lines = f.readlines()
+    
+    curr_line_num = 0
+    
+    for line in lines:
+      curr_line_num += 1
+      
+      ## without the  re  module
+      # if string_to_find in line:
+      #   the_result_str += line + "\n"
+      # ##endof:  if string_to_find in line:
+      
+      if re.match(string_to_find, line):
+        the_result_str += line + "\n"  # @todo  figure out the best way to
+                                       #        include  curr_line_num
+      ##endof:  if string_to_find in line
+    ##endof:  for line in lines
+  ##endof:  with open ... f
+  
+  return the_result_str
+  
+##endof:  grep(string_to_find, filename)
+
+
+if __name__ == "__main__":
+  '''
+  Gets executed if the file is run as a script
+  '''
+  
+  main(sys.argv[1:2]) # for main -> grep(string_to_find, filename)
+
+##endof:  if __name__ == "__main__"
