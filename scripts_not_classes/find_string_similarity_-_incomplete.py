@@ -6,7 +6,6 @@
 # @file find_string_similarity.py
 # @author David BLACK  @bballdave025
 #
-# Not yet implemented (higher priorities.
 #
 #@LIST
 # #### !!!!!!!!!!!!! @@@@@@@@@@@@ !!!!!!!!!!!!!!!!!!! ############ !!!!!!!
@@ -29,8 +28,8 @@ virtual environment -DWB 2020-04-02)
 > python -m pip install distance python-Levenshtein fuzzy
 
 If you want `python-Levenshtein` on Windows, you need to install
-Microsoft Visual C++ Redistributables and Microsoft Visual (something) 2014,
-build tools.
+Microsoft Visual C++ Redistributables and Microsoft Visual Studio Build
+Tools 2014
 
 '''
 ##############################################################################
@@ -53,8 +52,7 @@ do_have_fuzzy = True # might change in try/except
 
 ## Next one needs `pip install distance`
 import distance
-## Next one needs `pip install fuzzy`. Not installed for CASA,
-## other non-Speech-Sciences stuff, because it needs VS 2014
+## Next one needs `pip install fuzzy`. Needs VS 2014
 ## and VS Build Tools 2014
 try:
   import fuzzy
@@ -72,14 +70,8 @@ except ImportError as ie:
 ## For Python2
 # from __future__ import absolute_import
 
-is_stand_alone = False
+is_stand_alone = True
 #@TODO : figure out a good way to test this.
-
-# Intra-package
-# if not is_stand_alone:
-  # import agp
-  # from ep
-# ##endof:  if not is_stand_alone
 
 ##----------------------
 # ACCESSIBLE VARIABLES
@@ -92,9 +84,7 @@ class GraphemicSimilarityMetric(Enum):
   "https://stackoverflow.com/questions/1471153/" + \
   "string-similarity-metrics-in-python"
   (and answers)
-  http://www.dcs.shef.ac.uk/~sam/stringmetrics.html (though CC won't let me
-                                                     get there; their project
-                                                     is SimMetrics)
+  http://www.dcs.shef.ac.uk/~sam/stringmetrics.html
   https://en.wikipedia.org/wiki/String_metric
   
   
@@ -210,8 +200,8 @@ class SimlOrReprImplementation(Enum):
   FUZZY = 4
   
   
-  SCRATCH = -137 # These are my attempts to implement to algorithms,
-                 # mostly to see if I can match and understand.
+  SCRATCH = -137 #  These are my attempts to implement to algorithms,
+                 #+ mostly to see if I can match and understand.
   
 ##endof:  class PhoneticSimilarityMetric(Enum)
 
@@ -1137,8 +1127,9 @@ def fill_out_soundex_str(in_str):
   '''
   
   out_str = in_str
-  
-  while len(in_str) < 4:
+
+  # for some reason, this had `while len(in_str) < 4`
+  while len(out_str) < 4:
     out_str += '0'
   ##endof:  while len(out_str) < 4
   
