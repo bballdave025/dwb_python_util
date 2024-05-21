@@ -13,9 +13,7 @@
 ##-------------------
 ## IMPORT STATEMENTS
 ##-------------------
-import os
 import sys
-import re
 
 # Intra-Package
 ## For Python2
@@ -66,7 +64,7 @@ def wc(filename):
       
       n_lines += 1
       n_words += len(words)
-      n_chars += len(chars)
+      n_chars += len(line)
   
     ##endof:  for line in f
   
