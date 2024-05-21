@@ -4,7 +4,7 @@
 '''
 @file check_is_a_file.py
 @author David BLACK  @bballdave025
-@since 20180803 (idea noted possibly as early as 20180703)
+@since 2018-08-03 (idea noted possibly as early as 2018-07-03)
 
 '''
 ##############################################################################
