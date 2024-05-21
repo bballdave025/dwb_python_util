@@ -6,10 +6,6 @@
 @author David BLACK  @bballdave025
 @since 20180803 (idea noted possibly as early as 20180703)
 
-Using the code now being used in acuss/score/process_with_sclite , in the
-create_path_and_check(ref_or_hyp_file, 
-                      outfile_dir_used, 
-                      transcript_type = None)
 '''
 ##############################################################################
 
@@ -29,12 +25,6 @@ def main(possible_filename_str, do_verbosity=True, is_initial=False):
   Provides an easy command-line entrance to the file detection
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ciaf.main ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   return run(possible_filename_str, do_verbosity, is_initial)
   
 ##endof:  main(filename)
@@ -44,12 +34,6 @@ def run(possible_filename_str, do_verbosity=True, is_initial=False):
   '''
   Provides an easy-to-remember method name for file detection
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ciaf.main ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   return check_is_a_file(possible_filename_str, do_verbosity, is_initial)
   
@@ -106,6 +90,7 @@ def check_is_a_file(possible_filename_str,
     ##endof:  if/else do_verbosity
     
     #str_represents_a_file = False
+                      
   except FileNotFoundError as fnfe:
     if do_verbosity:
       warn_str = "\WARNING!\nThere was no file named\n  " + check_str + \
@@ -113,13 +98,16 @@ def check_is_a_file(possible_filename_str,
       "\nThat is likely the way that the program will continue.\n"
     
       sys.stdout.write(warn_str)
+      
     else:
       pass
     ##endof:  if/else do_verbosity
     
     #str_represents_a_file = False
+                      
   finally:
     pass
+    
   ##endof:  try/except/finally
   
   return str_represents_a_file
@@ -132,13 +120,6 @@ if __name__ == "__main__":
   Gets executed if the file is run as a script
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ciaf from the command line ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   main(sys.argv[1])
-  #main(sys.argv[1:])
 
 ##endof:  if __name__ == "__main__"
