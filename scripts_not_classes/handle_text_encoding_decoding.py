@@ -23,9 +23,6 @@ import traceback
 
 from bs4 import UnicodeDammit
 
-
-
-import agp
 import check_is_a_file
 
 
@@ -48,17 +45,11 @@ def main(input_param, outfile_dir=None):
                  containing the modified transcript string
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ep.main ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   #essentially_parsed_str = parse_file(input_param)
   #write_out_processed_file(filename_str, essentially_parsed_str, 
   #                         outfile_dir=None)
   
-  run(input_param)
+  run(input_param, outfile_dir)
   
   #pass
   ##@TODO:
@@ -90,11 +81,6 @@ def run(input_param, outfile_dir=None):
           in the original file
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ep.run ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   # essentially_parsed_str = parse_file(filename_str)
   # write_out_processed_file(filename_str, essentially_parsed_str,
@@ -102,37 +88,21 @@ def run(input_param, outfile_dir=None):
   
   
   input_filename_or_string = input_param
+  
   return do_the_encdec_swear(input_filename_or_string)
   
-##endof:  run(filename_str)
+##endof:  run(input_param)
 
 
 def do_the_encdec_swear(input_filename_or_string):
   '''
   @brief Gets a string representing the file content.
-  method, for details on what "raw format" means
   
   @param filename_str  The string representing the filename
   @return              A string (repeat, A STRING) which is encoded in UTF-8
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "endec.parse_file ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   bunches_verbosity_stuff = False
-  
-  # if (bunches_verbosity_stuff):
-    
-    # sys.stdout.write("\n\n")
-    # sys.stdout.write("\n\n###############################\n")
-    # sys.stdout.write    ("# BEGINNING ESSENTIAL PARSING #\n")
-    # sys.stdout.write    ("###############################\n")
-    # sys.stdout.write("\n")    
-    
-  # ##endof:  if <verbosity and debug>
   
   getting_fixed_output_str = ''
   
@@ -179,20 +149,14 @@ def do_the_encdec_swear(input_filename_or_string):
   
   return str_to_return
   
-##endof:  parse_file(filename_str)
+##endof:  do_the_encdec_swear(input_filename_or_string) #parse_file(filename_str)
 
 
-def do_the_swear(filename_or_regular_str):
+def do_the_swear(filename_or_regular_str, do_parse_to_ascii=True):
   '''
   Run the UnicodeDammit stuff from Beautiful Soup 4 to get unicode
   (officially, the utf-8 encoded string using Unicode)
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "ep.do_the_swear ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   data = ''
   
