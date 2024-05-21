@@ -20,6 +20,9 @@ import shutil
 # from __future__ import absolute_import
 import check_is_a_file
 
+DEBUG_PYCAT = False
+LET_THE_PYCAT_OUT = False
+
 length_of_pre_text = 10
 
 def main(*filenames):
@@ -33,12 +36,6 @@ def main(*filenames):
   @param filenames A tuple of strings representing filenames
   @RESULT Same as `cat_output`
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.main ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   return run(*filenames)
   
@@ -56,12 +53,6 @@ def run(*filenames):
   @param filenames A tuple of strings representing filenames
   @RESULT Same as `cat_output`
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.run ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   return cat_output(*filenames, 
                     line_length_max = None, 
@@ -91,12 +82,6 @@ def cat(*filenames,
   @TODO  incorporate the new creation of a new file
   
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.main ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   for filename in filenames:
     with open(filename, 'r') as f:
@@ -182,12 +167,6 @@ def cat_output(*filenames,
   @TODO  incorporate the new creation of a new file
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.cat_output ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   for filename in filenames:
     if not check_is_a_file.run(filename):
       sys.stderr.write("\n" + str(filename))
@@ -235,21 +214,16 @@ def output_file_with_prefix(filename, prefix):
           newline after.
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.output_file_with_prefix ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   sys.stdout.write(prefix + ":  ")
   
   with open(filename, 'r') as f:
     shutil.copyfileobj(f, sys.stdout)
   ##endof:  with
   
-  # if agp.LET_THE_PYCAT_OUT:
+  # if LET_THE_PYCAT_OUT:
     # sys.stdout.write("\n")
-  # ##endof:  if agp.LET_THE_PYCAT_OUT
+  # ##endof:  if LET_THE_PYCAT_OUT
+  
 ##endof:  output_file_with_prefix()
 
 
@@ -262,12 +236,6 @@ def output_file_with_word_wrap(filename, line_max, prefix = None):
   
   This has been abandoned for a bit.
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.output_file_with_word_wrap ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   lines = None
   
@@ -285,12 +253,6 @@ def lines_to_stdout(lines, prefix = None):
   '''
   Send an array of text lines to stdout
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.lines_to_stdout ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   line_counter = 0
   for line in lines:
@@ -329,21 +291,15 @@ def output_str_with_word_wrap(total_string, line_max, prefix = None):
   Set aside for a while. Too many problems that I didn't have time to solve
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.output_str_with_word_wrap ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
   ##it had better be on one line ## Never mind, I think I fixed that
   #current_working_str = ' '.join(total_string.split())
   
-  # if agp.DEBUG_PYCAT:
-    # sys.stdout.write("\n")
-    # sys.stdout.write("complete string:\n" + \
-                     # total_string)
-    # sys.stdout.write("\n")
-  # ##endof:  if agp.DEBUG_PYCAT
+  if DEBUG_PYCAT:
+    sys.stdout.write("\n")
+    sys.stdout.write("complete string:\n" + \
+                     total_string)
+    sys.stdout.write("\n")
+  ##endof:  if DEBUG_PYCAT
   
   lines = []
   current_index = 0
@@ -354,12 +310,12 @@ def output_str_with_word_wrap(total_string, line_max, prefix = None):
     
     str_with_line_max_chars = current_working_str[:line_max]
     
-    # if agp.DEBUG_PYCAT:
-      # sys.stdout.write("\n")
-      # sys.stdout.write("before trimming:\n" + \
-                       # str_with_line_max_chars)
-      # sys.stdout.write("\n")
-    # ##endof:  if agp.DEBUG_PYCAT
+    if DEBUG_PYCAT:
+      sys.stdout.write("\n")
+      sys.stdout.write("before trimming:\n" + \
+                       str_with_line_max_chars)
+      sys.stdout.write("\n")
+    ##endof:  if DEBUG_PYCAT
     
     #chars_not_used = []
     
@@ -380,16 +336,16 @@ def output_str_with_word_wrap(total_string, line_max, prefix = None):
     current_index = len(added_line)
     current_working_str = current_working_str[current_index:]
     
-    # if agp.DEBUG_PYCAT:
-      # sys.stdout.write("\n")
-      # sys.stdout.write("after trimming...\n" + \
-                       # "lines: \n" + str(lines) + "\n" + \
-                       # "remaining string:\n" + \
-                       # current_working_str)
-      # sys.stdout.write("\n")
+    if DEBUG_PYCAT:
+      sys.stdout.write("\n")
+      sys.stdout.write("after trimming...\n" + \
+                       "lines: \n" + str(lines) + "\n" + \
+                       "remaining string:\n" + \
+                       current_working_str)
+      sys.stdout.write("\n")
       
-      # #input("Press [Enter] to continue.")
-    # ##endof:  if agp.DEBUG_PYCAT
+      #input("Press [Enter] to continue.")
+    ##endof:  if DEBUG_PYCAT
       
   ##endof:  while len(current_working_str) > line_max
   
@@ -397,16 +353,16 @@ def output_str_with_word_wrap(total_string, line_max, prefix = None):
     added_line = current_working_str.split('\n')[0] + "\n"
     lines.append(added_line)
     current_working_str = current_working_str[len(added_line):]
-    # if agp.DEBUG_PYCAT:
-      # sys.stdout.write("\n")
-      # sys.stdout.write("after trimming...\n" + \
-                       # "lines: \n" + str(lines) + "\n" + \
-                       # "remaining string:\n" + \
-                       # current_working_str)
-      # sys.stdout.write("\n")
+    if DEBUG_PYCAT:
+      sys.stdout.write("\n")
+      sys.stdout.write("after trimming...\n" + \
+                       "lines: \n" + str(lines) + "\n" + \
+                       "remaining string:\n" + \
+                       current_working_str)
+      sys.stdout.write("\n")
       
-      # #input("Press [Enter] to continue.")
-    # ##endof:  if agp.DEBUG_PYCAT
+      #input("Press [Enter] to continue.")
+    ##endof:  if DEBUG_PYCAT
   ##endof:  while '\n' in current_working_str[:-1]
   
   if not current_working_str == '':  
@@ -423,12 +379,6 @@ def cat_and_outfile(out_filename, *in_filenames):
   The output is written to outfilename
   Adds an extra newline between files and at the end.
   '''
-  
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat.cat_and_outfile ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
   
   with open(out_filename, 'w') as ofh:
     for filename in in_filenames:
@@ -451,13 +401,6 @@ if __name__ == "__main__":
   Gets executed if the file is run as a script
   '''
   
-  # if agp.DEBUG_METHOD_ENTRANCE:
-    # sys.stdout.write("\nYOU ARE ENTERING " + \
-                     # "pycat from the command line ." + \
-                     # "WELCOME\n")
-  # ##endof:  if
-  
-  #main(sys.argv[1])
   main(sys.argv[1:])
 
 ##endof:  if __name__ == "__main__"
