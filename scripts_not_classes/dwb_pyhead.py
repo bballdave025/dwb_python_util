@@ -51,7 +51,7 @@ def head(n_lines, filename):
   @result                A string representing the first  n_lines  lines of
                          the file represented by  filename  will print out.
   '''
-
+  
   # @todo  For all  with open , allow 'utf-8' encoding, and use UnicodeDammit
   with open(filename, 'r') as ifh:
     for i in range(n_lines):
