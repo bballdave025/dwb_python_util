@@ -64,6 +64,7 @@ import cpuinfo  # needs `pip install py-cpuinfo`
 import socket
 import uuid
 import re
+import subprocess
 
 can_do_wmi = True # innocent until proven guilty
 can_do_torch = True
@@ -192,18 +193,41 @@ def print_gpu_graphics_card_info():
   else:
     print("Can't use  wmi  to test for GPU/Graphics Card.")
   ##endof:  if can_do_wmi
-
+  
   if can_do_torch:
     print("Using  PyTorch  and the  torch.cuda.is_available()  method.")
     torch_cuda_is_available = torch.cuda.is_available()
     print("The statement, 'There is CUDA and an appropriate GPU',")
     print("  is ... ", str(torch_cuda_is_available))
+    
+    #  Possible future reference:
+    #+ pf_ref_1 = "https://web.archive.org/web/20240529231349/" + \
+    #+            "https://stackoverflow.com/questions/71188895/" + \
+    #+            "how-to-get-pytorchs-memory-stats-on-cpu-main-memory"
+    #+ pf_ref_2 = 
   else:
     print("Can't use  PyTorch  to test for (NVidia, CUDA-enabled) GPU.")
   ##endof:  if can_do_torch
 
   if can_do_tf:
     print("Using  TensorFlow  with several of its methods.")
+    
+    print("  Attempting to get GPU Device List")
+    
+    gpu_device_list = tf.config.list_physical_devices('GPU')
+    if gpu_device_list:
+      for this_device in gpu_device_list:
+        #  GDD_ref = "https://web.archive.org/web/20240529230520/" + \
+        #+           "https://www.tensorflow.org/api_docs/python/" + \
+        #+           "tf/config/experimental/get_device_details"
+        details = tf.config.experimental.get_device_details(this_device)
+        print(str(details))
+      ##endof:  for this_device in gpu_device_list
+    else:
+      print("No GPU Devices.")
+    ##endof:  if gpu_device_list
+  
+  
   else:
     print("Can't use  TensorFlow  to test for GPU.")
   ##endof:  if can_do_tf
