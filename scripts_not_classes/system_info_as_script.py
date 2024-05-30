@@ -65,10 +65,13 @@ import socket
 import uuid
 import re
 import subprocess
+import sys
+import os
 
 can_do_wmi = True # innocent until proven guilty
 can_do_torch = True
 can_do_tf = True
+can_do_tfdl = True
 
 try:
   import torch
@@ -76,6 +79,7 @@ except Exception as e_torch:
   can_do_torch = False
 finally:
   pass
+##endof:  try/except/finally torch
 
 try
   import tensorflow as tf
@@ -83,6 +87,15 @@ except Exception as e_tf:
   can_do_tf = False
 finally:
   pass
+##endof:  try/except/finally tf
+
+try
+  from tensorflow.python.client import device_lib
+except Exception as e_tfdl:
+  can_do_tf = False
+finally:
+  pass
+##endof:  try/except/finally device_lib
 
 # For windows
 try:
@@ -91,7 +104,12 @@ except Exception as e_wmi:
   can_do_wmi = False
 finally:
   pass
+##endof:  try/except/finally wmi
 
+
+##-----------------
+##  METHODS, ETC.
+##-----------------
 
 def main():
   '''
@@ -135,7 +153,17 @@ def print_system_information():
   print()
   print_boot_time()
   print()
-  
+  print_cpu_info()
+  print()
+  print_gpu_graphics_card_info()
+  print()
+  print_memory_info()
+  print()
+  print_disk_info()
+  # print()
+  # print_network_info()
+  print()
+
 ##endof:  print_system_information()
 
 
@@ -168,18 +196,44 @@ def print_boot_time():
   '''
 
   print("#"*25, "#### Boot Time #####", "#"*25)
-  
+  boot_time_timestamp = psutil.boot_time()
+  bt = dattime.fromtimestamp(boot_time_timestamp)
+  print("Boot Time (date and time of last boot) was")
+  print(f"Boot Time: {bt.year}-{bt.month}-{bt.day}T" + \
+        f"{bt.hour}:{bt.minute}:{bt.second}")
 ##endof:  print_boot_time()
 
 
-
+def print_cpu_info():
+  '''
+  
+  '''
+  
+  print("#"*25, "##### CPU Info #####", "#"*25)
+  
+  print("Physical cores:", psutil.cpu_count(logical=False))
+  print("Total cores:", psutil.cpu_count(logical=True))
+  print("CPU Usage Per Core:")
+  for core_num, percentage in enumerate(psutil.cpu_percent(percpu=True, interval=1)):
+      print(f"Core {core_num}: {percentage}%")
+  ##endof:  for core_num, percentage ...
+  print(f"Total CPU Usage: {psutil.cpu_percent()}%")
+  
+  cpufreq = psutil.cpu_freq()
+  print(f"Max Frequency: {cpufreq.max:.2f}Mhz")
+  print(f"Min Frequency: {cpufreq.min:.2f}Mhz")
+  print(f"Current Frequency: {cpufreq.current:.2f}Mhz")
+  
+##endof:  print_cpu_info()
 
 
 def print_gpu_graphics_card_info():
   '''
   
   '''
-
+  
+  print("#"*25, "##### GPU Info #####", "#"*25)
+  
   print("Information on GPU(s)/Graphics Card(s)")
   print(" (if any such information is to be found)")
   print()
@@ -211,9 +265,7 @@ def print_gpu_graphics_card_info():
 
   if can_do_tf:
     print("Using  TensorFlow  with several of its methods.")
-    
     print("  Attempting to get GPU Device List")
-    
     gpu_device_list = tf.config.list_physical_devices('GPU')
     if gpu_device_list:
       for this_device in gpu_device_list:
@@ -226,24 +278,131 @@ def print_gpu_graphics_card_info():
     else:
       print("No GPU Devices.")
     ##endof:  if gpu_device_list
-  
-  
   else:
     print("Can't use  TensorFlow  to test for GPU.")
   ##endof:  if can_do_tf
 
+  if can_do_tfdl:
+    print("Tensorflow can give us CPU (and/or GPU) info.")
+    print("The info here might help you know if we're running on a CPU.")
+    device_lib.list_local_devices()
+  ##endof:  if can_do_tfdl
+
+  print()
+  print("Trying to use some nvidia code ( nvidia-smi ) to find information")
+  try:
+    nvidia_cmd = subprocess.Popen(['nvidia-smi', '-q'],
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE
+    )
+
+    out_str = nvidia_cmd.communicate()
+    print(str(out_str))
+  except Exception as e_nvidia:
+    print("  That nvidia stuff didn't work". file=sys.stderr)
+    print("  The error information is:", file=sys.stderr)
+    print(str(e_nvidia), file=sys.stderr)
+  finally:
+    print("  That's the end of the nvidia try.")
+  ##endof:  try/except/finally
+  
   print()
   print("Those are all our chances to find out about any GPU/Graphics Cards.")
   
 ##endof:  print_gpu_graphics_card_info()
 
 
-def get_size(n_bytes, suffix="B"):
+def print_memory_info():
+  '''
+
+  '''
+  
+  print("#"*22, " Memory (RAM) Information", "#"*22)
+  
+  svmem = psutil.virtual_memory()
+  print(f"Total: {get_size(svmem.total)}")
+  print(f"Available: {get_size(svmem.available)}")
+  print(f"Used: {get_size(svmem.used)}")
+  print(f"Percentage: {svmem.percent}%")
+  
+  print(" "*5, "="*15, "SWAP Memory", "="*15, " "*5)
+  swap = psutil.swap_memory()
+  print(f"Total: {get_size(swap.total)}")
+  print(f"Free: {get_size(swap.free)}")
+  print(f"Used: {get_size(swap.used)}")
+  print(f"Percentage: {swap.percent}%")
+##endof:  get_memory_info()
+
+
+def print_disk_information():
+  '''
+
+  '''
+  
+  print("#"*25, "#### Disk Info #####", "#"*25)print("Partitions and Usage:")
+  partitions = psutil.disk_partitions()
+  for partition in partitions:
+    print(f"=== Device: {partition.device} ===")
+    print(f"  Mountpoint: {partition.mountpoint}")
+    print(f"  File system type: {partition.fstype}")
+    try:
+      partition_usage = psutil.disk_usage(partition.mountpoint)
+    except PermissionError as e_perm:
+      print("  PermissionDrror while trying to get partition.",
+            file=sys.stdout
+      )
+      print("  Details are:", file=sys.stdout)
+      print("  This can be thrown when the disk is not ready.",
+            file=sys.stdout
+      )
+      continue
+    print(f"  Total Size: {get_size(partition_usage.total)}")
+    print(f"  Used: {get_size(partition_usage.used)}")
+    print(f"  Free: {get_size(partition_usage.free)}")
+    print(f"  Percentage: {partition_usage.percent}%")
+  ##endof:  for partition in partitions
+  
+  print("  Since last boot,")
+  disk_io = psutil.disk_io_counters()
+  print(f"Total read: {get_size(disk_io.read_bytes)}")
+  print(f"Total write: {get_size(disk_io.write_bytes)}")
+##endof:  print_disk_information()
+
+
+def print_network_info()
+  '''
+
+  '''
+  
+  print("#"*24, " Network Information ", "#"*25)
+  ## get all network interfaces (virtual and physical)
+  if_addrs = psutil.net_if_addrs()
+  for interface_name, interface_addresses in if_addrs.items():
+    for address in interface_addresses:
+      print(f"=== Interface: {interface_name} ===")
+      if str(address.family) == 'AddressFamily.AF_INET':
+        print(f"  IP Address: {address.address}")
+        print(f"  Netmask: {address.netmask}")
+        print(f"  Broadcast IP: {address.broadcast}")
+      elif str(address.family) == 'AddressFamily.AF_PACKET':
+        print(f"  MAC Address: {address.address}")
+        print(f"  Netmask: {address.netmask}")
+        print(f"  Broadcast MAC: {address.broadcast}")
+      ##endof:  if/elif
+  print("Stats since boot")
+  net_io = psutil.net_io_counters()
+  print(f"Total Bytes Sent: {get_size(net_io.bytes_sent)}")
+  print(f"Total Bytes Received: {get_size(net_io.bytes_recv)}")
+  
+##endof:  print_network_info()
+
+
+def get_size(n_bytes, suffix="bB"):
   '''
   Scale bytes to a nice-looking format, so we don't get any factors
   of 10^5 or of 10^-8, etc. Well, actually just the big positive ones.
   examples:
-    @todo : examples
+    @todo : examples of n_bytes to the proper context
 
   @param  int n_bytes  :  The number of bytes, which should be converted
                           to something more easily handled.
@@ -263,6 +422,7 @@ def get_size(n_bytes, suffix="B"):
     
   ##endof:  for prefix in ...
 ##endof:  get_size(n_bytes, suffix="bB")
+
 
 if __name__ == "__main__":
   ''' The script is called from the command-line '''
